@@ -3,7 +3,7 @@ name: Deploy to Ubuntu VPS
 on:
   push:
     branches:
-      - master  # Set this to your default branch
+      - dev  # Set this to your default branch
 
 jobs:
   deploy:
