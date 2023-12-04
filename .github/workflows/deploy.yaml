@@ -13,6 +13,12 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v2
 
+    - name: Create .env file
+      run: |
+        echo MONGO_URI=${{ secrets.MONGO_URI }} >> .env
+        # Add other environment variables in the same way
+
+
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
 
