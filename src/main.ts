@@ -1,9 +1,15 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { useRequestLogging } from './request-logging';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    cors: true,
+    rawBody: true,
+    bodyParser: true,
+  });
+  useRequestLogging(app);
   const config = new DocumentBuilder()
     .setTitle('Cine Magic API')
     .setDescription('Cine Magic Backend API')
@@ -13,7 +19,7 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
- 
+
   await app.listen(3000);
 }
 bootstrap();
