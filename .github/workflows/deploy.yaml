@@ -39,6 +39,7 @@ jobs:
         script: | 
           echo "$ENV_CONTENTS" > /tmp/.env
           chmod 666 /tmp/.env
+          ls -l /tmp/.env
           docker pull dfanso/cine-magic:latest
           docker stop cine-magic || true
           docker rm cine-magic || true
