@@ -13,12 +13,6 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v2
 
-    - name: Create .env file
-      run: |
-        echo MONGO_URI=${{ secrets.MONGO_URI }} >> .env
-        # Add other environment variables in the same way
-
-
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
 
@@ -34,14 +28,14 @@ jobs:
         context: .
         file: ./Dockerfile
         push: true
-        tags: dfanso/cine-magic:latest  # Replace with your DockerHub username and app name
+        tags: dfanso/cine-magic:latest 
 
     - name: SSH and Deploy
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.VPS_HOST }}
         username: ${{ secrets.VPS_USERNAME }}
-        password: ${{ secrets.VPS_PASSWORD }}  # Use key if you have SSH key setup
+        password: ${{ secrets.VPS_PASSWORD }} 
         script: | 
           docker pull dfanso/cine-magic:latest
           docker stop cine-magic || true
