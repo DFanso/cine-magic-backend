@@ -42,4 +42,4 @@ jobs:
           docker rm cine-magic || true
           docker run -d --name cine-magic -p 3000:3000 \
             -e MONGO_URI=${{ secrets.MONGO_URI }} \
-            ***/cine-magic:latest
+            dfansocine-magic:latest
