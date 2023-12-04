@@ -36,7 +36,8 @@ jobs:
         host: ${{ secrets.VPS_HOST }}
         username: ${{ secrets.VPS_USERNAME }}
         password: ${{ secrets.VPS_PASSWORD }}  # Use key if you have SSH key setup
-        script: |
+        script: | 
+          echo "$ENV_CONTENTS" > .env
           docker pull dfanso/cine-magic:latest
           docker stop cine-magic || true
           docker rm cine-magic || true
