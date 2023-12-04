@@ -38,7 +38,6 @@ jobs:
         password: ${{ secrets.VPS_PASSWORD }}  # Use key if you have SSH key setup
         script: | 
           echo "$ENV_CONTENTS" > ~/.env
-          usermod -aG docker $USER
           chmod 666 ~/.env
           docker pull dfanso/cine-magic:latest
           docker stop cine-magic || true
