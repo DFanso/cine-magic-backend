@@ -37,12 +37,11 @@ jobs:
         username: ${{ secrets.VPS_USERNAME }}
         password: ${{ secrets.VPS_PASSWORD }}  # Use key if you have SSH key setup
         script: | 
-          echo "$ENV_CONTENTS" > /tmp/.env
-          chmod 666 /tmp/.env
-          ls -l /tmp/.env
           docker pull dfanso/cine-magic:latest
           docker stop cine-magic || true
           docker rm cine-magic || true
-          docker run -d --name cine-magic -p 3000:3000 --env-file /tmp/.env:/usr/src/app/.env dfanso/cine-magic:latest
+          docker run -d --name cine-magic -p 3000:3000 \
+          -e MONGO_URI=${{ secrets.MONGO_URI }} \
+          *** dfanso/cine-magic:latest
       env:
         ENV_CONTENTS: ${{ secrets.ENV_CONTENTS }}
