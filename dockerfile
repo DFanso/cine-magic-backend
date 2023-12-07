@@ -4,11 +4,6 @@ FROM node:18-alpine as build
 # Create app directory
 WORKDIR /usr/src/app
 
-ARG MONGO_URI
-
-# Use ARG value to set an ENV variable
-ENV MONGO_URI=${MONGO_URI}
-
 # Install app dependencies
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
 COPY package*.json ./
