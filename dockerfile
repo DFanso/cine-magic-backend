@@ -20,10 +20,11 @@ FROM node:18-alpine
 
 WORKDIR /usr/src/app
 
+COPY .env ./.env
 COPY --from=build /usr/src/app/dist ./dist
 COPY --from=build /usr/src/app/node_modules ./node_modules
 COPY --from=build /usr/src/app/package*.json ./
-COPY .env ./.env
+
 
 EXPOSE 3000
 CMD ["node", "dist/main"]
