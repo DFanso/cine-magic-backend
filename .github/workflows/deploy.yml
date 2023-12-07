@@ -40,4 +40,6 @@ jobs:
           docker pull dfanso/cine-magic:latest
           docker stop cine-magic || true
           docker rm cine-magic || true
-          docker run -d --name cine-magic -p 3000:3000 -e MONGO_URI=${{ secrets.MONGO_URI }} dfanso/cine-magic:latest
+          docker run -d --name cine-magic -p 3000:3000 \
+            -e MONGO_URI=${{ secrets.MONGO_URI }} \
+            dfanso/cine-magic:latest
