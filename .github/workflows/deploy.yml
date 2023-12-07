@@ -28,7 +28,9 @@ jobs:
         context: .
         file: ./Dockerfile
         push: true
-        tags: dfanso/cine-magic:latest 
+        tags: dfanso/cine-magic:latest
+        build-args: |
+          MONGO_URI=${{ secrets.MONGO_URI }}
 
     - name: SSH and Deploy
       uses: appleboy/ssh-action@master
@@ -40,4 +42,4 @@ jobs:
           docker pull dfanso/cine-magic:latest
           docker stop cine-magic || true
           docker rm cine-magic || true
-          docker run -d --name cine-magic -p 3000:3000 -e MONGO_URI=${{ secrets.MONGO_URI }} dfanso/cine-magic:latest
+          docker run -d --name cine-magic -p 3000:3000 dfanso/cine-magic:latest
