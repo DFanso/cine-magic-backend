@@ -8,6 +8,7 @@ import { MongooseModule, MongooseModuleOptions } from '@nestjs/mongoose';
 import { ClsModule } from 'nestjs-cls';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
+import { EmailModule } from './email/email.module';
 import mongoose from 'mongoose';
 
 mongoose.set('debug', (collectionName, methodName, ...methodArgs) => {
@@ -24,6 +25,9 @@ mongoose.set('debug', (collectionName, methodName, ...methodArgs) => {
       isGlobal: true,
       validationSchema: Joi.object({
         MONGO_URI: Joi.string().required(),
+        JWT_SECRET: Joi.string().required(),
+        GMAIL_USER: Joi.string().required(),
+        GMAIL_PASS: Joi.string().required(),
       }),
     }),
     MongooseModule.forRoot(
@@ -49,6 +53,7 @@ mongoose.set('debug', (collectionName, methodName, ...methodArgs) => {
     }),
     AuthModule,
     UsersModule,
+    EmailModule,
   ],
   controllers: [AppController],
   providers: [AppService],

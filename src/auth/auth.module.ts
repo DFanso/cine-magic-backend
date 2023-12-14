@@ -7,19 +7,24 @@ import { JwtStrategy } from './jwt.strategy';
 import { ClsModule } from 'nestjs-cls';
 import { ConfigService } from '@nestjs/config';
 import { UsersModule } from 'src/users/users.module';
+import { MongooseModule } from '@nestjs/mongoose';
+import { OtpCode, OtpCodeSchema } from './entities/otpCode.entity';
+import { EmailModule } from 'src/email/email.module';
 
 @Module({
   imports: [
+    MongooseModule.forFeature([{ name: OtpCode.name, schema: OtpCodeSchema }]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.registerAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         secret: configService.get('JWT_SECRET'),
-        signOptions: { expiresIn: '60s' },
+        signOptions: { expiresIn: '60m' },
       }),
     }),
     ClsModule,
     UsersModule,
+    EmailModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy, Logger],
