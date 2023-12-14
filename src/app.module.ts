@@ -28,6 +28,7 @@ mongoose.set('debug', (collectionName, methodName, ...methodArgs) => {
         JWT_SECRET: Joi.string().required(),
         GMAIL_USER: Joi.string().required(),
         GMAIL_PASS: Joi.string().required(),
+        EMAIL_FROM_ADDRESS: Joi.string().required(),
       }),
     }),
     MongooseModule.forRoot(

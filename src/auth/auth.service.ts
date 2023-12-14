@@ -52,6 +52,9 @@ export class AuthService {
     if (!user) {
       return null;
     }
+    if (user.status === UserStatus.Unverified) {
+      throw new BadRequestException('User not Verified');
+    }
     const payload = { email: user.email, sub: user._id };
     return this.jwtService.sign(payload);
   }
@@ -92,10 +95,9 @@ export class AuthService {
     return HttpStatus.OK;
   }
 
-  async validateOtp(userId: string, otp: string): Promise<boolean> {
+  async validateOtp(otp: string): Promise<boolean> {
     try {
       const otpCode = await this.otpCodeModel.findOne({
-        userId,
         code: otp,
         expiresAt: { $gt: new Date() },
       });
@@ -106,7 +108,7 @@ export class AuthService {
         );
       }
       await otpCode.deleteOne();
-      const user = await this.usersService.findOne({ _id: userId });
+      const user = await this.usersService.findOne({ _id: otpCode.userId });
       if (user) {
         user.status = UserStatus.Verified;
         await user.save();

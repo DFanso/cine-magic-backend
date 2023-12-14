@@ -6,24 +6,17 @@ import {
   HttpStatus,
   ConflictException,
   UnauthorizedException,
-  UseGuards,
   HttpException,
 } from '@nestjs/common';
-import {
-  ApiBearerAuth,
-  ApiBody,
-  ApiOkResponse,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBody, ApiOkResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { LoginDto } from './dto/login.dto';
 import { ClsService } from 'nestjs-cls';
-import { AuthGuard } from '@nestjs/passport';
 import { ValidateOTPDto } from './dto/validate.otp';
-import { AppClsStore, UserStatus } from 'src/Types/user.types';
+import { UserStatus } from 'src/Types/user.types';
 import { UsersService } from 'src/users/users.service';
+import { RequestOTPDto } from './dto/request.otp.dto';
 
 @ApiTags('auth')
 @Controller({ path: 'auth', version: '1' })
@@ -75,39 +68,28 @@ export class AuthController {
     return { accessToken: token };
   }
 
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
   @ApiOkResponse({ status: 200 })
   @Post('/otp-req')
-  async otpReq() {
-    const context = this.clsService.get<AppClsStore>();
-    const user = await this.usersService.findOne({ _id: context.user.id });
-    if (!context || !context.user) {
+  async otpReq(@Body() requestOTPDto: RequestOTPDto) {
+    const user = await this.usersService.findOne({
+      email: requestOTPDto.Email,
+    });
+    if (!user) {
       throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
-    } else if (!user || user.status === UserStatus.Verified) {
+    } else if (user.status === UserStatus.Verified) {
       throw new HttpException('User Already Verified', HttpStatus.BAD_REQUEST);
     }
 
-    return this.authService.generateOtp(context.user.id);
+    return this.authService.generateOtp(user._id);
   }
 
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
   @ApiBody({ type: ValidateOTPDto })
   @ApiOkResponse({ status: 200 })
   @Post('/otp-validate')
   async otpValidate(@Body() validateOtpDto: ValidateOTPDto) {
-    const context = this.clsService.get<AppClsStore>();
-    if (!context || !context.user) {
-      throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
-    }
     try {
       return (
-        await this.authService.validateOtp(
-          context.user.id,
-          validateOtpDto.code,
-        ),
-        HttpStatus.OK
+        await this.authService.validateOtp(validateOtpDto.code), HttpStatus.OK
       );
     } catch (error) {
       throw new HttpException('Error validating OTP', HttpStatus.BAD_REQUEST);
