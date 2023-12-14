@@ -1,11 +1,5 @@
 import { ClsStore } from 'nestjs-cls';
 
-export enum UserRoles {
-  admin = 'ADMIN',
-  customer = 'CUSTOMER',
-  director = 'DIRECTOR',
-}
-
 export interface MinimalUser {
   id: string;
   email: string;
@@ -28,4 +22,14 @@ export interface MinimalUser {
 export interface JwtPayload {
   sub: string;
   email: string;
+}
+
+export enum UserType {
+  Admin = 'ADMIN',
+  Customer = 'CUSTOMER',
+}
+
+export enum UserStatus {
+  Verified = 'VERIFIED',
+  Unverified = 'UNVERIFIED',
 }

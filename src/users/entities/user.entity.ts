@@ -4,6 +4,8 @@ import * as mongoosePaginate from 'mongoose-paginate-v2';
 import * as bcrypt from 'bcrypt';
 import { Types } from 'mongoose';
 
+import { UserType, UserStatus } from 'src/Types/user.types';
+
 export type UserDocument = Document & User;
 
 @Schema({ timestamps: true })
@@ -19,13 +21,17 @@ export class User {
   @Prop({ required: true, unique: true })
   email: string;
 
-  // Other properties as defined in your original schema
-  // ...
-
   @Prop({ select: false })
   password: string;
 
-  // Add other fields as necessary
+  @Prop()
+  avatar: string;
+
+  @Prop({ type: String, enum: UserType, default: UserType.Customer })
+  type: UserType;
+
+  @Prop({ type: String, enum: UserStatus, default: UserStatus.Unverified })
+  status: UserStatus;
 }
 
 const UserSchema = SchemaFactory.createForClass(User);
