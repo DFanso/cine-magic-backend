@@ -5,7 +5,7 @@ import { User, UserDocument } from './entities/user.entity';
 import { PaginateModel } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { ClsService } from 'nestjs-cls';
-import { AppClsStore } from 'src/Types/user.types';
+import { AppClsStore, UserStatus } from 'src/Types/user.types';
 
 @Injectable()
 export class UsersService {
@@ -15,6 +15,7 @@ export class UsersService {
   ) {}
 
   create(createUserDto: CreateUserDto) {
+    createUserDto.status = UserStatus.Unverified;
     const createdUser = new this.userModel(createUserDto);
     return createdUser.save();
   }
@@ -36,11 +37,24 @@ export class UsersService {
     );
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(
+    id: string,
+    updateUserDto: UpdateUserDto,
+  ): Promise<UserDocument> {
+    const updatedUser = await this.userModel
+      .findByIdAndUpdate(id, updateUserDto, { new: true })
+      .exec();
+    if (!updatedUser) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+    return updatedUser;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: string): Promise<{ deleted: boolean; id: string }> {
+    const result = await this.userModel.deleteOne({ _id: id }).exec();
+    if (result.deletedCount === 0) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+    return { deleted: true, id };
   }
 }
