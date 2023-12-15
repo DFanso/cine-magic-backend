@@ -10,6 +10,7 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { EmailModule } from './email/email.module';
 import { MoviesModule } from './movies/movies.module';
+import { ShowTimesModule } from './show-times/show-times.module';
 import mongoose from 'mongoose';
 
 mongoose.set('debug', (collectionName, methodName, ...methodArgs) => {
@@ -57,6 +58,7 @@ mongoose.set('debug', (collectionName, methodName, ...methodArgs) => {
     UsersModule,
     EmailModule,
     MoviesModule,
+    ShowTimesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

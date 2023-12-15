@@ -3,7 +3,6 @@ import {
   IsString,
   IsArray,
   IsNotEmpty,
-  IsMongoId,
   IsOptional,
   IsUrl,
   MinLength,
@@ -15,11 +14,6 @@ import {
 } from 'class-validator';
 
 export class CreateMovieDto {
-  @IsMongoId()
-  @IsNotEmpty()
-  @ApiProperty({ type: String, description: 'Unique identifier for the movie' })
-  readonly MovieID: string;
-
   @IsString()
   @IsNotEmpty()
   @MinLength(1)
