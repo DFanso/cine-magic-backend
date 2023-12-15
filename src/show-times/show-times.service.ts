@@ -17,16 +17,19 @@ export class ShowTimesService {
   }
 
   async findAll(movieId: string): Promise<ShowTime[]> {
-    return this.showTimeModel.find({ movieId });
+    return this.showTimeModel.find({ movieId }).populate('movieId');
   }
 
   async findOne(filter: any): Promise<ShowTimeDocument | null> {
-    const showTime = await this.showTimeModel.findOne(
-      filter,
-      Object.keys(this.showTimeModel.schema.obj)
-        .map((key) => key)
-        .join(' '),
-    );
+    const showTime = await this.showTimeModel
+      .findOne(
+        filter,
+        Object.keys(this.showTimeModel.schema.obj)
+          .map((key) => key)
+          .join(' '),
+      )
+      .populate('movieId')
+      .exec();
     if (!showTime) {
       throw new NotFoundException(`ShowTime not found.`);
     }

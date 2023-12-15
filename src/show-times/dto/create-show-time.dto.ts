@@ -11,6 +11,7 @@ import {
   IsMongoId,
 } from 'class-validator';
 import { Type } from 'class-transformer';
+import { Types } from 'mongoose';
 
 class SeatsDto {
   @IsNumber()
@@ -36,11 +37,11 @@ class SeatsDto {
 export class CreateShowTimeDto {
   @IsMongoId()
   @ApiProperty({
-    type: String,
+    type: Types.ObjectId,
     description: 'MongoDB ObjectId of the movie',
     example: '507f191e810c19729de860ea',
   })
-  movieId: string;
+  movieId: Types.ObjectId;
 
   @IsDateString()
   @ApiProperty({

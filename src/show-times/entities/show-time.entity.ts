@@ -1,13 +1,13 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Types } from 'mongoose';
+import mongoose, { Document } from 'mongoose';
 import { Movie } from 'src/movies/entities/movie.entity';
 
 export type ShowTimeDocument = ShowTime & Document;
 
 @Schema()
 export class ShowTime {
-  @Prop({ type: Types.ObjectId, ref: 'Movie', required: true })
-  movieId: Movie | Types.ObjectId;
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Movie', required: true })
+  movieId: Movie | mongoose.Schema.Types.ObjectId;
 
   @Prop({ required: true })
   date: Date;

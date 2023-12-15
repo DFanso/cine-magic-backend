@@ -20,6 +20,7 @@ import { ShowTimesService } from './show-times.service';
 import { CreateShowTimeDto } from './dto/create-show-time.dto';
 import { UpdateShowTimeDto } from './dto/update-show-time.dto';
 import { MoviesService } from 'src/movies/movies.service';
+import mongoose from 'mongoose';
 
 @ApiTags('show-times')
 @Controller({ path: 'movies/:movieId/show-times', version: '1' })
@@ -46,7 +47,7 @@ export class ShowTimesController {
     if (!movie) {
       throw new NotFoundException(`Movie with ID '${movieId}' not found.`);
     }
-    createShowTimeDto.movieId = movieId;
+    createShowTimeDto.movieId = new mongoose.Types.ObjectId(movieId);
     return this.showTimesService.create(createShowTimeDto);
   }
 
