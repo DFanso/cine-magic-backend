@@ -20,10 +20,15 @@ export class MoviesService {
     return this.movieModel.find().exec();
   }
 
-  async findOne(id: string): Promise<Movie> {
-    const movie = await this.movieModel.findById(id).exec();
+  async findOne(filter: any): Promise<MovieDocument | null> {
+    const movie = await this.movieModel.findOne(
+      filter,
+      Object.keys(this.movieModel.schema.obj)
+        .map((key) => key)
+        .join(' '),
+    );
     if (!movie) {
-      throw new NotFoundException(`Movie with ID '${id}' not found.`);
+      throw new NotFoundException(`Movie with ID '${filter.id}' not found.`);
     }
     return movie;
   }

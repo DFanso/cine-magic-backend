@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   HttpStatus,
+  NotFoundException,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -18,11 +19,16 @@ import {
 import { ShowTimesService } from './show-times.service';
 import { CreateShowTimeDto } from './dto/create-show-time.dto';
 import { UpdateShowTimeDto } from './dto/update-show-time.dto';
+import { MoviesService } from 'src/movies/movies.service';
+import mongoose from 'mongoose';
 
 @ApiTags('show-times')
 @Controller({ path: 'movies/:movieId/show-times', version: '1' })
 export class ShowTimesController {
-  constructor(private readonly showTimesService: ShowTimesService) {}
+  constructor(
+    private readonly showTimesService: ShowTimesService,
+    private readonly movieService: MoviesService,
+  ) {}
 
   @Post()
   @ApiOperation({ summary: 'Create a new show time for a movie' })
@@ -33,11 +39,15 @@ export class ShowTimesController {
   })
   @ApiParam({ name: 'movieId', type: 'string' })
   @ApiBody({ type: CreateShowTimeDto })
-  create(
+  async create(
     @Param('movieId') movieId: string,
     @Body() createShowTimeDto: CreateShowTimeDto,
   ) {
-    createShowTimeDto.movieId = movieId;
+    const movie = await this.movieService.findOne({ _id: movieId });
+    if (!movie) {
+      throw new NotFoundException(`Movie with ID '${movieId}' not found.`);
+    }
+    createShowTimeDto.movieId = new mongoose.Types.ObjectId(movieId);
     return this.showTimesService.create(createShowTimeDto);
   }
 
