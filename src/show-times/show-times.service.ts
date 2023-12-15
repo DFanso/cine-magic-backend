@@ -28,7 +28,7 @@ export class ShowTimesService {
         .join(' '),
     );
     if (!showTime) {
-      throw new NotFoundException(`ShowTime with ID '${filter.id}' not found.`);
+      throw new NotFoundException(`ShowTime not found.`);
     }
     return showTime;
   }
