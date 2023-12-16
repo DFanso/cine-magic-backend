@@ -14,6 +14,7 @@ import { ShowTimesModule } from './show-times/show-times.module';
 import { PaypalModule } from './paypal/paypal.module';
 import { BookingModule } from './booking/booking.module';
 import mongoose from 'mongoose';
+import { ScheduleModule } from '@nestjs/schedule';
 
 mongoose.set('debug', (collectionName, methodName, ...methodArgs) => {
   Logger.verbose(
@@ -58,6 +59,7 @@ mongoose.set('debug', (collectionName, methodName, ...methodArgs) => {
         },
       },
     }),
+    ScheduleModule.forRoot(),
     AuthModule,
     UsersModule,
     EmailModule,

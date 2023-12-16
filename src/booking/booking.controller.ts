@@ -72,14 +72,17 @@ export class BookingController {
       throw new HttpException('Show time not found', HttpStatus.BAD_REQUEST);
     }
 
-    // Check if the seats are already booked
-    if (
-      showTime.Seats.bookedSeats.some((bookedSeat) =>
-        createBookingDto.selectedSeats.includes(bookedSeat),
-      )
-    ) {
+    const seatsAreBooked = showTime.Seats.bookedSeats.some((bookedSeat) =>
+      createBookingDto.selectedSeats.includes(bookedSeat),
+    );
+    const seatsAreTemporarilyHeld = showTime.temporaryReservations.some(
+      (tempSeat) =>
+        createBookingDto.selectedSeats.includes(tempSeat.seatNumber) &&
+        tempSeat.reservationExpires > new Date(),
+    );
+    if (seatsAreBooked || seatsAreTemporarilyHeld) {
       throw new HttpException(
-        'One or more selected seats are already booked',
+        'One or more selected seats are already booked or temporarily held',
         HttpStatus.BAD_REQUEST,
       );
     }

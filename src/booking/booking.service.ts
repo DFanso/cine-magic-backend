@@ -4,16 +4,34 @@ import { Model } from 'mongoose';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { UpdateBookingDto } from './dto/update-booking.dto';
 import { Booking, BookingDocument } from './entities/booking.entity';
+import { ShowTimesService } from 'src/show-times/show-times.service';
 
 @Injectable()
 export class BookingService {
   constructor(
     @InjectModel(Booking.name) private bookingModel: Model<BookingDocument>,
+    private readonly showTimesService: ShowTimesService,
   ) {}
 
   async create(createBookingDto: CreateBookingDto): Promise<Booking> {
     const newBooking = new this.bookingModel(createBookingDto);
-    return newBooking.save();
+
+    const reservationDuration = 1; // minutes
+    const reservationExpires = new Date(
+      new Date().getTime() + reservationDuration * 60000,
+    );
+
+    const savedBooking = await newBooking.save();
+    const bookingId = savedBooking._id;
+
+    await this.showTimesService.reserveSeatsTemporarily(
+      createBookingDto.showTimeId,
+      createBookingDto.selectedSeats.map(Number),
+      reservationExpires,
+      bookingId,
+    );
+
+    return savedBooking;
   }
 
   async findAll(): Promise<Booking[]> {
