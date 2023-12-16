@@ -42,7 +42,7 @@ export class CreateBookingDto {
     description: 'Array of selected seat identifiers',
     example: ['A1', 'A2', 'B1'],
   })
-  selectedSeats: string[];
+  selectedSeats: number[];
 
   @IsNumber()
   @IsNotEmpty()

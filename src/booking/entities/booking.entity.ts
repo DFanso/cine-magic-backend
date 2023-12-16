@@ -35,7 +35,7 @@ export class Booking {
   @Prop({ required: true })
   @IsArray()
   @IsNotEmpty({ each: true })
-  selectedSeats: string[];
+  selectedSeats: number[];
 
   @Prop({ required: true })
   @IsNumber()
