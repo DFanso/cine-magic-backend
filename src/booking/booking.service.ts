@@ -42,9 +42,8 @@ export class BookingService {
       _id: createBookingDto.showTimeId,
     });
 
-    // Now create a PayPal order
     const approvalUrl = await this.paypalService.createOrder({
-      name: movie.Name, // or any other relevant name
+      name: movie.Name,
       unit_price: showTime.price.toString(),
       quantity: createBookingDto.selectedSeats.length.toString(),
       seats: createBookingDto.selectedSeats.length,
