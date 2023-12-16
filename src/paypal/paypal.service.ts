@@ -14,7 +14,17 @@ export class PaypalService {
     this.paypalClient = new paypal.core.PayPalHttpClient(environment);
   }
 
-  async createOrder(amount: string): Promise<string> {
+  async createOrder(details: {
+    name: string;
+    unit_price: string;
+    quantity: string;
+    seats: number;
+    bookingId: string;
+  }): Promise<string> {
+    const totalAmount = (
+      parseFloat(details.unit_price) * parseInt(details.quantity)
+    ).toFixed(2);
+
     const request = new paypal.orders.OrdersCreateRequest();
     request.prefer('return=representation');
     request.requestBody({
@@ -23,13 +33,30 @@ export class PaypalService {
         {
           amount: {
             currency_code: 'USD',
-            value: amount,
+            value: totalAmount,
+            breakdown: {
+              item_total: {
+                currency_code: 'USD',
+                value: totalAmount,
+              },
+            },
           },
+          items: [
+            {
+              name: details.name,
+              unit_amount: {
+                currency_code: 'USD',
+                value: details.unit_price,
+              },
+              quantity: details.quantity,
+            },
+          ],
+          custom_id: details.bookingId,
         },
       ],
       application_context: {
-        return_url: 'http://localhost:3000',
-        cancel_url: 'http://your-cancel-url.com',
+        return_url: 'http://localhost:3000/success',
+        cancel_url: 'http://localhost:3000/cancel',
       },
     });
 

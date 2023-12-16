@@ -7,6 +7,7 @@ import { UsersModule } from 'src/users/users.module';
 import { MoviesModule } from 'src/movies/movies.module';
 import { ShowTimesModule } from 'src/show-times/show-times.module';
 import { ClsModule } from 'nestjs-cls';
+import { PaypalModule } from 'src/paypal/paypal.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { ClsModule } from 'nestjs-cls';
     MoviesModule,
     ShowTimesModule,
     ClsModule,
+    PaypalModule,
   ],
   controllers: [BookingController],
   providers: [BookingService],

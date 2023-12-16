@@ -36,6 +36,7 @@ mongoose.set('debug', (collectionName, methodName, ...methodArgs) => {
         EMAIL_FROM_ADDRESS: Joi.string().required(),
         PAYPAL_CLIENT_SECRET: Joi.string().required(),
         PAYPAL_CLIENT_ID: Joi.string().required(),
+        WEBHOOK_ID: Joi.string().required(),
       }),
     }),
     MongooseModule.forRoot(

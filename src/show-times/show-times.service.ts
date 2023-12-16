@@ -66,22 +66,18 @@ export class ShowTimesService {
     reservationExpires: Date,
     bookingId: mongoose.Schema.Types.ObjectId,
   ): Promise<void> {
-    // Find the ShowTime document
     const showTime = await this.showTimeModel.findById(showTimeId);
     if (!showTime) {
       throw new NotFoundException(
         `ShowTime with ID '${showTimeId}' not found.`,
       );
     }
-
-    // Create temporary reservations
     const tempReservations = selectedSeats.map((seatNumber) => ({
       seatNumber,
       reservedUntil: reservationExpires,
-      bookingId: bookingId, // If you need to associate a booking ID, include it here
+      bookingId: bookingId,
     }));
 
-    // Add the temporary reservations to the ShowTime document
     await this.showTimeModel.updateOne(
       { _id: showTimeId },
       {

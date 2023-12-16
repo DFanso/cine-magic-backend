@@ -5,18 +5,22 @@ import { CreateBookingDto } from './dto/create-booking.dto';
 import { UpdateBookingDto } from './dto/update-booking.dto';
 import { Booking, BookingDocument } from './entities/booking.entity';
 import { ShowTimesService } from 'src/show-times/show-times.service';
+import { PaypalService } from 'src/paypal/paypal.service';
+import { MoviesService } from 'src/movies/movies.service';
 
 @Injectable()
 export class BookingService {
   constructor(
     @InjectModel(Booking.name) private bookingModel: Model<BookingDocument>,
     private readonly showTimesService: ShowTimesService,
+    private readonly paypalService: PaypalService,
+    private readonly moviesService: MoviesService,
   ) {}
 
-  async create(createBookingDto: CreateBookingDto): Promise<Booking> {
+  async create(createBookingDto: CreateBookingDto): Promise<any> {
     const newBooking = new this.bookingModel(createBookingDto);
 
-    const reservationDuration = 1; // minutes
+    const reservationDuration = 5; // minutes
     const reservationExpires = new Date(
       new Date().getTime() + reservationDuration * 60000,
     );
@@ -31,7 +35,26 @@ export class BookingService {
       bookingId,
     );
 
-    return savedBooking;
+    const movie = await this.moviesService.findOne({
+      _id: createBookingDto.movieId,
+    });
+    const showTime = await this.showTimesService.findOne({
+      _id: createBookingDto.showTimeId,
+    });
+
+    // Now create a PayPal order
+    const approvalUrl = await this.paypalService.createOrder({
+      name: movie.Name, // or any other relevant name
+      unit_price: showTime.price.toString(),
+      quantity: createBookingDto.selectedSeats.length.toString(),
+      seats: createBookingDto.selectedSeats.length,
+      bookingId: bookingId,
+    });
+
+    return {
+      booking: savedBooking,
+      approvalUrl,
+    };
   }
 
   async findAll(): Promise<Booking[]> {
