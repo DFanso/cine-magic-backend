@@ -12,10 +12,6 @@ import { PaymentStatus } from 'src/Types/booking.types';
 export class CreateBookingDto {
   @IsMongoId()
   @IsNotEmpty()
-  @ApiProperty({
-    description: 'The ID of the user',
-    example: '507f1f77bcf86cd799439011',
-  })
   userId: string;
 
   @IsMongoId()
@@ -46,24 +42,13 @@ export class CreateBookingDto {
 
   @IsNumber()
   @IsNotEmpty()
-  @ApiProperty({ description: 'Total price for the booking', example: 29.99 })
   totalPrice: number;
 
   @IsString()
   @IsNotEmpty()
-  @ApiProperty({
-    description: 'PayPal payment ID',
-    example: 'PAYID-LKLKJDAJ12345',
-    default: 'PAYID-LKLKJDAJ12345',
-  })
   paypalPaymentId: string;
 
   @IsEnum(PaymentStatus)
   @IsNotEmpty()
-  @ApiProperty({
-    enum: PaymentStatus,
-    description: 'Payment status',
-    example: PaymentStatus.Unpaid,
-  })
   paymentStatus: PaymentStatus;
 }
