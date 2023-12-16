@@ -26,21 +26,9 @@ export class CreateUserDto {
   @IsEmail()
   email: string;
 
-  @ApiProperty({
-    example: UserType.Customer,
-    enum: UserType,
-    description: 'The type of the user',
-    default: UserType.Customer,
-  })
   @IsEnum(UserType)
   type: UserType = UserType.Customer;
 
-  @ApiProperty({
-    example: UserStatus.Unverified,
-    enum: UserStatus,
-    description: 'The status of the user account',
-    default: UserStatus.Unverified,
-  })
   @IsEnum(UserStatus)
   status: UserStatus = UserStatus.Unverified;
 
