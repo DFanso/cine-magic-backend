@@ -35,6 +35,23 @@ export class ShowTime {
   price: number;
 
   @Prop({
+    type: [
+      {
+        seatNumber: Number,
+        reservedUntil: Date, // This field will be used for TTL
+        bookingId: mongoose.Schema.Types.ObjectId,
+      },
+    ],
+    default: [],
+  })
+  temporaryReservations: {
+    reservationExpires: Date;
+    seatNumber: number;
+    reservedUntil: Date; // This Date field should hold the time when the reservation should expire
+    bookingId: mongoose.Schema.Types.ObjectId;
+  }[];
+
+  @Prop({
     required: false,
     type: Date,
     expires: 0,

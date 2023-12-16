@@ -11,7 +11,10 @@ import { UsersModule } from './users/users.module';
 import { EmailModule } from './email/email.module';
 import { MoviesModule } from './movies/movies.module';
 import { ShowTimesModule } from './show-times/show-times.module';
+import { PaypalModule } from './paypal/paypal.module';
+import { BookingModule } from './booking/booking.module';
 import mongoose from 'mongoose';
+import { ScheduleModule } from '@nestjs/schedule';
 
 mongoose.set('debug', (collectionName, methodName, ...methodArgs) => {
   Logger.verbose(
@@ -31,6 +34,9 @@ mongoose.set('debug', (collectionName, methodName, ...methodArgs) => {
         GMAIL_USER: Joi.string().required(),
         GMAIL_PASS: Joi.string().required(),
         EMAIL_FROM_ADDRESS: Joi.string().required(),
+        PAYPAL_CLIENT_SECRET: Joi.string().required(),
+        PAYPAL_CLIENT_ID: Joi.string().required(),
+        WEBHOOK_ID: Joi.string().required(),
       }),
     }),
     MongooseModule.forRoot(
@@ -54,11 +60,14 @@ mongoose.set('debug', (collectionName, methodName, ...methodArgs) => {
         },
       },
     }),
+    ScheduleModule.forRoot(),
     AuthModule,
     UsersModule,
     EmailModule,
     MoviesModule,
     ShowTimesModule,
+    PaypalModule,
+    BookingModule,
   ],
   controllers: [AppController],
   providers: [AppService],
