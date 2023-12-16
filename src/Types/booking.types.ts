@@ -1,4 +1,4 @@
-export enum bookingStatus {
+export enum PaymentStatus {
   Paid = 'PAID',
   Unpaid = 'UNPAID',
 }
