@@ -21,7 +21,7 @@ export class ShowTimesService {
     return this.showTimeModel.find({ movieId }).populate('movieId');
   }
 
-  async findOne(filter: any): Promise<ShowTimeDocument | null> {
+  async findOne(filter: any): Promise<ShowTimeDocument> {
     const showTime = await this.showTimeModel
       .findOne(
         filter,
@@ -35,6 +35,13 @@ export class ShowTimesService {
       throw new NotFoundException(`ShowTime not found.`);
     }
     return showTime;
+  }
+  async findById(id: string): Promise<ShowTimeDocument> {
+    const booking = await this.showTimeModel.findById(id).exec();
+    if (!booking) {
+      throw new NotFoundException(`Booking with ID '${id}' not found`);
+    }
+    return booking;
   }
 
   async update(
@@ -96,12 +103,20 @@ export class ShowTimesService {
     await this.showTimeModel.updateMany(
       {},
       {
-        $pull: {
+        $set: {
           temporaryReservations: {
-            reservedUntil: { $lte: now },
+            $filter: {
+              input: '$temporaryReservations',
+              as: 'reservation',
+              cond: { $gte: ['$$reservation.reservedUntil', now] }, // Keep reservations that are not expired
+            },
           },
         },
       },
     );
+  }
+
+  getCollection() {
+    return this.showTimeModel.collection;
   }
 }

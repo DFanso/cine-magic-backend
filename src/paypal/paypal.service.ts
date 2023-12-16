@@ -19,7 +19,7 @@ export class PaypalService {
     unit_price: string;
     quantity: string;
     seats: number;
-    bookingId: string;
+    bookingID: string;
   }): Promise<string> {
     const totalAmount = (
       parseFloat(details.unit_price) * parseInt(details.quantity)
@@ -51,7 +51,7 @@ export class PaypalService {
               quantity: details.quantity,
             },
           ],
-          custom_id: details.bookingId,
+          custom_id: details.bookingID,
         },
       ],
       application_context: {

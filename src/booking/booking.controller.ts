@@ -77,8 +77,7 @@ export class BookingController {
     );
     const seatsAreTemporarilyHeld = showTime.temporaryReservations.some(
       (tempSeat) =>
-        createBookingDto.selectedSeats.includes(tempSeat.seatNumber) &&
-        tempSeat.reservationExpires > new Date(),
+        createBookingDto.selectedSeats.includes(tempSeat.seatNumber),
     );
     if (seatsAreBooked || seatsAreTemporarilyHeld) {
       throw new HttpException(

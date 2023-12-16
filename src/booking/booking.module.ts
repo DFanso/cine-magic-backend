@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { BookingService } from './booking.service';
 import { BookingController } from './booking.controller';
 import { Booking, BookingSchema } from './entities/booking.entity';
@@ -16,7 +16,7 @@ import { PaypalModule } from 'src/paypal/paypal.module';
     MoviesModule,
     ShowTimesModule,
     ClsModule,
-    PaypalModule,
+    forwardRef(() => PaypalModule),
   ],
   controllers: [BookingController],
   providers: [BookingService],

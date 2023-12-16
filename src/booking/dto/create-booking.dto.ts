@@ -38,9 +38,9 @@ export class CreateBookingDto {
   @IsString({ each: true })
   @IsNotEmpty({ each: true })
   @ApiProperty({
-    type: [String],
+    type: [Number],
     description: 'Array of selected seat identifiers',
-    example: ['A1', 'A2', 'B1'],
+    example: [1, 2, 3],
   })
   selectedSeats: number[];
 

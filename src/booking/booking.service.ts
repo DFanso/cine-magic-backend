@@ -48,7 +48,7 @@ export class BookingService {
       unit_price: showTime.price.toString(),
       quantity: createBookingDto.selectedSeats.length.toString(),
       seats: createBookingDto.selectedSeats.length,
-      bookingId: bookingId,
+      bookingID: bookingId.toString(),
     });
 
     return {
@@ -61,7 +61,7 @@ export class BookingService {
     return this.bookingModel.find().exec();
   }
 
-  async findOne(id: string): Promise<Booking> {
+  async findOne(id: string): Promise<BookingDocument> {
     const booking = await this.bookingModel.findById(id).exec();
     if (!booking) {
       throw new NotFoundException(`Booking with ID '${id}' not found`);
