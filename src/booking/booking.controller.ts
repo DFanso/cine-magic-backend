@@ -86,6 +86,10 @@ export class BookingController {
       );
     }
 
+    const numberOfSeats = createBookingDto.selectedSeats.length;
+    const pricePerSeat = showTime.price;
+    const totalPrice = numberOfSeats * pricePerSeat;
+    createBookingDto.totalPrice = totalPrice;
     createBookingDto.paymentStatus = PaymentStatus.Unpaid;
     return this.bookingService.create(createBookingDto);
   }

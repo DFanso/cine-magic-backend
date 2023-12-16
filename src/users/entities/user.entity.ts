@@ -24,9 +24,6 @@ export class User {
   @Prop({ select: false })
   password: string;
 
-  @Prop()
-  avatar: string;
-
   @Prop({ type: String, enum: UserType, default: UserType.Customer })
   type: UserType;
 

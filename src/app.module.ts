@@ -15,6 +15,7 @@ import { PaypalModule } from './paypal/paypal.module';
 import { BookingModule } from './booking/booking.module';
 import mongoose from 'mongoose';
 import { ScheduleModule } from '@nestjs/schedule';
+import { FeedbacksModule } from './feedbacks/feedbacks.module';
 
 mongoose.set('debug', (collectionName, methodName, ...methodArgs) => {
   Logger.verbose(
@@ -68,6 +69,7 @@ mongoose.set('debug', (collectionName, methodName, ...methodArgs) => {
     ShowTimesModule,
     PaypalModule,
     BookingModule,
+    FeedbacksModule,
   ],
   controllers: [AppController],
   providers: [AppService],

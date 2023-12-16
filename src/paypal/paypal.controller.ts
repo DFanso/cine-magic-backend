@@ -7,6 +7,9 @@ import { ConfigService } from '@nestjs/config';
 import { BookingService } from 'src/booking/booking.service';
 import { PaymentStatus } from 'src/Types/booking.types';
 import { ShowTimesService } from 'src/show-times/show-times.service';
+import { UsersService } from 'src/users/users.service';
+import { EmailService } from 'src/email/email.service';
+import { MoviesService } from 'src/movies/movies.service';
 
 @ApiTags('paypal')
 @Controller({ path: 'paypal', version: '1' })
@@ -17,6 +20,9 @@ export class PaypalController {
     private readonly configService: ConfigService,
     private readonly bookingService: BookingService,
     private readonly showTimeService: ShowTimesService,
+    private readonly usersService: UsersService,
+    private readonly emailService: EmailService,
+    private readonly moviesService: MoviesService,
   ) {}
 
   @Post('/webhook')
@@ -24,18 +30,17 @@ export class PaypalController {
     console.log('Received PayPal webhook:', body);
     const bookingId = body.resource.purchase_units[0].custom_id.toString();
 
-    // Process the webhook data based on the event type
-    // Example: Check if it's a payment capture event
     if (body.event_type === 'CHECKOUT.ORDER.APPROVED') {
       const booking = await this.bookingService.findOne(bookingId);
       const showTimeId = booking.showTimeId.toString();
       const showTime = await this.showTimeService.findById(showTimeId);
+      const user = await this.usersService.findOne(booking.userId);
+      const movie = await this.moviesService.findOne(booking.movieId);
 
       booking.paymentStatus = PaymentStatus.Paid;
       booking.paypalPaymentId = body.id;
       const newlyBookedSeats = booking.selectedSeats;
 
-      // Construct the update query
       const updateQuery = {
         $push: {
           'Seats.bookedSeats': {
@@ -51,11 +56,27 @@ export class PaypalController {
 
       await booking.save();
       await showTime.save();
+
+      const emailHtml = await this.emailService.renderTemplate(
+        'booking-confirmation.hbs',
+        {
+          userName: user.firstName + ' ' + user.lastName,
+          movieName: movie.Name,
+          showTime:
+            showTime.date + ' ' + showTime.startTime + ' - ' + showTime.endTime,
+          seats: booking.selectedSeats,
+          totalPrice: booking.totalPrice,
+          movieImageUrl: movie.Image[0],
+        },
+      );
+
+      await this.emailService.sendEmail(
+        [user.email],
+        'Your Booking Confirmation',
+        emailHtml,
+      );
     }
 
-    console.log('bookingID: ' + bookingId);
-
-    // Send a 200 response to acknowledge receipt of the webhook
     return res.status(HttpStatus.OK).send('Webhook received');
   }
 }
