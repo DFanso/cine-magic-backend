@@ -12,6 +12,7 @@ import { EmailModule } from './email/email.module';
 import { MoviesModule } from './movies/movies.module';
 import { ShowTimesModule } from './show-times/show-times.module';
 import { PaypalModule } from './paypal/paypal.module';
+import { BookingModule } from './booking/booking.module';
 import mongoose from 'mongoose';
 
 mongoose.set('debug', (collectionName, methodName, ...methodArgs) => {
@@ -63,6 +64,7 @@ mongoose.set('debug', (collectionName, methodName, ...methodArgs) => {
     MoviesModule,
     ShowTimesModule,
     PaypalModule,
+    BookingModule,
   ],
   controllers: [AppController],
   providers: [AppService],
