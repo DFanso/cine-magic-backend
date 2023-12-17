@@ -15,11 +15,14 @@ import { ConfigService } from '@nestjs/config';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { UserStatus } from 'src/Types/user.types';
+import { ResetOtpCode } from './entities/reset.otpCode.enitity';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectModel(OtpCode.name) private readonly otpCodeModel: Model<OtpCode>,
+    @InjectModel(ResetOtpCode.name)
+    private readonly resetOtpCodeModel: Model<ResetOtpCode>,
     private readonly emailService: EmailService,
     private readonly configService: ConfigService,
     private usersService: UsersService,
@@ -122,5 +125,57 @@ export class AuthService {
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
+  }
+
+  async generatePasswordResetOtp(email: string): Promise<any> {
+    const otp = Math.floor(1000 + Math.random() * 9000).toString();
+
+    await this.resetOtpCodeModel.create({
+      email,
+      code: otp,
+      expiresAt: new Date(Date.now() + 5 * 60000),
+    });
+
+    const emailHtml = await this.emailService.renderTemplate(
+      'verify-code.hbs',
+      {
+        code: otp,
+        user: email,
+      },
+    );
+
+    try {
+      await this.emailService.sendEmail(
+        [email],
+        'Your Password Reset OTP Code',
+        emailHtml,
+      );
+    } catch (error) {
+      throw new BadRequestException('Email could not be sent');
+    }
+
+    return 'OTP sent successfully';
+  }
+
+  async resetPassword(otp: string, newPassword: string): Promise<any> {
+    const otpCode = await this.resetOtpCodeModel.findOne({
+      code: otp,
+      expiresAt: { $gt: new Date() },
+    });
+    if (!otpCode) {
+      throw new HttpException(
+        'OTP code is invalid or has expired',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const user = await this.usersService.findOne({ email: otpCode.email });
+    if (user) {
+      user.password = newPassword;
+      await user.save();
+    }
+    await otpCode.deleteOne();
+
+    return 'Password reset successful';
   }
 }

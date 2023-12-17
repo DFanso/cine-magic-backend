@@ -10,10 +10,17 @@ import { UsersModule } from 'src/users/users.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { OtpCode, OtpCodeSchema } from './entities/otpCode.entity';
 import { EmailModule } from 'src/email/email.module';
+import {
+  ResetOtpCode,
+  ResetOtpCodeSchema,
+} from './entities/reset.otpCode.enitity';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: OtpCode.name, schema: OtpCodeSchema }]),
+    MongooseModule.forFeature([
+      { name: OtpCode.name, schema: OtpCodeSchema },
+      { name: ResetOtpCode.name, schema: ResetOtpCodeSchema },
+    ]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.registerAsync({
       inject: [ConfigService],
