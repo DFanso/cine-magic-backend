@@ -1,26 +1,55 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 import { CreateFeedbackDto } from './dto/create-feedback.dto';
 import { UpdateFeedbackDto } from './dto/update-feedback.dto';
+import { Feedback, FeedbackDocument } from './entities/feedback.entity';
 
 @Injectable()
 export class FeedbacksService {
-  create(createFeedbackDto: CreateFeedbackDto) {
-    return 'This action adds a new feedback';
+  constructor(
+    @InjectModel(Feedback.name) private feedbackModel: Model<FeedbackDocument>,
+  ) {}
+
+  async create(createFeedbackDto: CreateFeedbackDto): Promise<Feedback> {
+    const newFeedback = new this.feedbackModel(createFeedbackDto);
+    return newFeedback.save();
   }
 
-  findAll() {
-    return `This action returns all feedbacks`;
+  async findAll(filter = {}): Promise<Feedback[]> {
+    const feedbacks = await this.feedbackModel
+      .find(
+        filter,
+        Object.keys(this.feedbackModel.schema.obj)
+          .map((key) => key)
+          .join(' '),
+      )
+      .exec();
+
+    if (feedbacks.length === 0) {
+      throw new NotFoundException('No feedbacks found matching the criteria');
+    }
+    return feedbacks;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} feedback`;
+  async findOne(id: string): Promise<Feedback> {
+    return this.feedbackModel.findById(id).exec();
   }
 
-  update(id: number, updateFeedbackDto: UpdateFeedbackDto) {
-    return `This action updates a #${id} feedback`;
+  async update(
+    id: string,
+    updateFeedbackDto: UpdateFeedbackDto,
+  ): Promise<Feedback> {
+    return this.feedbackModel
+      .findByIdAndUpdate(id, updateFeedbackDto, { new: true })
+      .exec();
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} feedback`;
+  async remove(id: string): Promise<{ deleted: boolean }> {
+    const result = await this.feedbackModel.deleteOne({ _id: id }).exec();
+    if (result.deletedCount === 0) {
+      throw new NotFoundException(`Feedback with ID '${id}' not found.`);
+    }
+    return { deleted: true };
   }
 }
