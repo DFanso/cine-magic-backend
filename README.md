@@ -1,5 +1,3 @@
-## Backend Repository (cine-magic-backend)
-
 # Cine Magic - Cinema Ticket Booking System (Backend)
 
 Cine Magic is the backend repository of a web-based Cinema Ticket Booking System that provides the server-side logic and API for the frontend application. This backend is built using Node.js and Express.js, and it interacts with a MongoDB database to handle user authentication, movie data, and booking information.
