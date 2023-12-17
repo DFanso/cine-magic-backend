@@ -7,8 +7,6 @@ Cine Magic is the backend repository of a web-based Cinema Ticket Booking System
 - **Backend**: Node.js, Express.js
 - **Database**: MongoDB
 - **Authentication**: JWT (JSON Web Tokens)
-- **Deployment**: (Specify deployment platforms, e.g., Heroku, AWS)
-
 
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
