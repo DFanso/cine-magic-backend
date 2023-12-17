@@ -10,6 +10,7 @@ import {
   HttpStatus,
   HttpException,
   UseGuards,
+  NotFoundException,
 } from '@nestjs/common';
 import { BookingService } from './booking.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
@@ -27,6 +28,7 @@ import { UsersService } from 'src/users/users.service';
 import { MoviesService } from 'src/movies/movies.service';
 import { ShowTimesService } from 'src/show-times/show-times.service';
 import { AuthGuard } from '@nestjs/passport';
+import mongoose from 'mongoose';
 
 @ApiTags('booking')
 @Controller({ path: 'booking', version: '1' })
@@ -94,6 +96,36 @@ export class BookingController {
     return this.bookingService.create(createBookingDto);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
+  @Get('/user')
+  @ApiOperation({ summary: 'Get bookings for the authenticated user' })
+  @ApiResponse({ status: HttpStatus.OK, description: 'Bookings found' })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'No bookings found for the user',
+  })
+  async findByUser() {
+    const context = this.clsService.get<AppClsStore>();
+    if (!context || !context.user) {
+      throw new HttpException(
+        'Authentication required',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+
+    // Assuming the user ID in the context is already a valid MongoDB ObjectId
+    const bookings = await this.bookingService.findAll({
+      userId: context.user.id,
+    });
+
+    if (bookings.length === 0) {
+      throw new NotFoundException('No bookings found for the user');
+    }
+
+    return bookings;
+  }
+
   @Get()
   @ApiOperation({ summary: 'Get all bookings' })
   @ApiResponse({ status: HttpStatus.OK, description: 'All bookings returned' })
@@ -109,7 +141,8 @@ export class BookingController {
     description: 'Booking not found',
   })
   findOne(@Param('id') id: string) {
-    return this.bookingService.findOne(id);
+    const bookingID = new mongoose.Types.ObjectId(id);
+    return this.bookingService.findOne({ _id: bookingID });
   }
 
   @Patch(':id')

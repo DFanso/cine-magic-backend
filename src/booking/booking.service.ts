@@ -56,17 +56,35 @@ export class BookingService {
     };
   }
 
-  async findAll(): Promise<Booking[]> {
-    return this.bookingModel.find().exec();
+  async findAll(filter = {}): Promise<Booking[]> {
+    const bookings = await this.bookingModel
+      .find(
+        filter,
+        Object.keys(this.bookingModel.schema.obj)
+          .map((key) => key)
+          .join(' '),
+      )
+      .populate('userId')
+      .populate('movieId')
+      .exec();
+
+    if (bookings.length === 0) {
+      throw new NotFoundException('No booking found matching the criteria');
+    }
+    return bookings;
   }
 
   async findOne(filter: any): Promise<BookingDocument | null> {
-    const booking = await this.bookingModel.findOne(
-      filter,
-      Object.keys(this.bookingModel.schema.obj)
-        .map((key) => key)
-        .join(' '),
-    );
+    const booking = await this.bookingModel
+      .findOne(
+        filter,
+        Object.keys(this.bookingModel.schema.obj)
+          .map((key) => key)
+          .join(' '),
+      )
+      .populate('userId')
+      .populate('movieId')
+      .exec();
     if (!booking) {
       throw new NotFoundException(`Booking with not found`);
     }
