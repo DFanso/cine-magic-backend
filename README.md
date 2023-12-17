@@ -1,3 +1,13 @@
+# Cine Magic - Cinema Ticket Booking System (Backend)
+
+Cine Magic is the backend repository of a web-based Cinema Ticket Booking System that provides the server-side logic and API for the frontend application. This backend is built using Node.js and Express.js, and it interacts with a MongoDB database to handle user authentication, movie data, and booking information.
+
+## Technologies Used
+
+- **Backend**: Node.js, Express.js
+- **Database**: MongoDB
+- **Authentication**: JWT (JSON Web Tokens)
+
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
 </p>
@@ -22,28 +32,36 @@
   <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
   [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
-## Description
+## Getting Started
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+To get started with the Cine Magic backend on your local machine, follow these steps:
 
-## Installation
+1. Clone the repository:
 
-```bash
-$ npm install
-```
+   ```bash
+   git clone https://github.com/your-username/cine-magic-backend.git
 
-## Running the app
+2. Navigate to the project directory:
 
-```bash
-# development
-$ npm run start
+   ```bash
+   cd cine-magic-backend
 
-# watch mode
-$ npm run start:dev
+3. Install dependencies:
 
-# production mode
-$ npm run start:prod
-```
+   ```bash
+   npm install
+
+4. Set up environment variables:
+
+  - Create a .env file based on the provided .env.example file.
+  - Configure database and other environment variables as needed.
+
+5. Start the development server:
+
+   ```bash
+   npm start
+
+6. The backend API will be accessible at http://localhost:3001.
 
 ## Test
 
@@ -62,12 +80,10 @@ $ npm run test:cov
 
 Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
 
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
 ## License
 
 Nest is [MIT licensed](LICENSE).
+
+## Contact
+
+If you have any questions or need further assistance, please feel free to contact us.
