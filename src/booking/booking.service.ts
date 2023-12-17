@@ -60,10 +60,15 @@ export class BookingService {
     return this.bookingModel.find().exec();
   }
 
-  async findOne(id: string): Promise<BookingDocument> {
-    const booking = await this.bookingModel.findById(id).exec();
+  async findOne(filter: any): Promise<BookingDocument | null> {
+    const booking = await this.bookingModel.findOne(
+      filter,
+      Object.keys(this.bookingModel.schema.obj)
+        .map((key) => key)
+        .join(' '),
+    );
     if (!booking) {
-      throw new NotFoundException(`Booking with ID '${id}' not found`);
+      throw new NotFoundException(`Booking with not found`);
     }
     return booking;
   }
