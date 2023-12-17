@@ -8,7 +8,13 @@ import {
   UnauthorizedException,
   HttpException,
 } from '@nestjs/common';
-import { ApiBody, ApiOkResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiOkResponse,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { LoginDto } from './dto/login.dto';
@@ -17,6 +23,8 @@ import { ValidateOTPDto } from './dto/validate.otp';
 import { UserStatus } from 'src/Types/user.types';
 import { UsersService } from 'src/users/users.service';
 import { RequestOTPDto } from './dto/request.otp.dto';
+import { RequestResetDto } from './dto/request-reset.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 
 @ApiTags('auth')
 @Controller({ path: 'auth', version: '1' })
@@ -94,5 +102,22 @@ export class AuthController {
     } catch (error) {
       throw new HttpException('Error validating OTP', HttpStatus.BAD_REQUEST);
     }
+  }
+
+  @Post('/password-reset-request')
+  @ApiOperation({ summary: 'Request password reset OTP' })
+  @ApiBody({ type: RequestResetDto })
+  async requestPasswordReset(@Body() requestResetDto: RequestResetDto) {
+    return this.authService.generatePasswordResetOtp(requestResetDto.email);
+  }
+
+  @Post('/reset-password')
+  @ApiOperation({ summary: 'Reset password using OTP' })
+  @ApiBody({ type: ResetPasswordDto })
+  async resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
+    return this.authService.resetPassword(
+      resetPasswordDto.otp,
+      resetPasswordDto.newPassword,
+    );
   }
 }
