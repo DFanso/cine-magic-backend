@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString, Matches, IsEnum } from 'class-validator';
-import { BucketDomains } from 'src/types/s3.types';
+import { BucketDomains } from 'src/Types/s3.types';
 
 export class GeneratePresignedUrlDto {
   @IsString()
