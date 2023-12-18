@@ -39,7 +39,7 @@ To get started with the Cine Magic backend on your local machine, follow these s
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/your-username/cine-magic-backend.git
+   git clone https://github.com/DFanso/cine-magic-backend.git
 
 2. Navigate to the project directory:
 
@@ -61,7 +61,7 @@ To get started with the Cine Magic backend on your local machine, follow these s
    ```bash
    npm start
 
-6. The backend API will be accessible at http://localhost:3001.
+6. The backend API will be accessible at http://localhost:3000.
 
 ## Test
 
