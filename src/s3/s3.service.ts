@@ -36,9 +36,8 @@ export class S3Service {
     );
     //
     const presignedUrl = await getSignedUrl(this.s3Client, command, {
-      expiresIn: 3600, // The URL will expire in 1 hour, you can adjust this value
+      expiresIn: 3600,
     });
-    // https://techxeed-dev.s3.eu-west-2.amazonaws.com/user_profile/a75c5f88-7058-4f40-8153-f4be9063d877-sample.pdf
     console.log(
       `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${key}`,
     );
