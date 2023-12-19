@@ -104,6 +104,8 @@ export class FeedbacksController {
     return feedbacks;
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
   @Patch(':id')
   @ApiOperation({ summary: 'Update feedback by ID' })
   @ApiResponse({ status: 200, description: 'Feedback updated.' })
@@ -115,6 +117,8 @@ export class FeedbacksController {
     return this.feedbacksService.update(id, updateFeedbackDto);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
   @Delete(':id')
   @ApiOperation({ summary: 'Delete feedback by ID' })
   @ApiResponse({ status: 200, description: 'Feedback deleted.' })

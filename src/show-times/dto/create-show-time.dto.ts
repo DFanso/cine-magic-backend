@@ -36,11 +36,6 @@ class SeatsDto {
 
 export class CreateShowTimeDto {
   @IsMongoId()
-  @ApiProperty({
-    type: Types.ObjectId,
-    description: 'MongoDB ObjectId of the movie',
-    example: '507f191e810c19729de860ea',
-  })
   movieId: Types.ObjectId;
 
   @IsDateString()
