@@ -20,7 +20,7 @@ import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { LoginDto } from './dto/login.dto';
 import { ClsService } from 'nestjs-cls';
 import { ValidateOTPDto } from './dto/validate.otp';
-import { UserStatus } from 'src/Types/user.types';
+import { UserStatus, UserType } from 'src/Types/user.types';
 import { UsersService } from 'src/users/users.service';
 import { RequestOTPDto } from './dto/request.otp.dto';
 import { RequestResetDto } from './dto/request-reset.dto';
@@ -47,6 +47,30 @@ export class AuthController {
   })
   async signUp(@Body() createUserDto: CreateUserDto) {
     try {
+      const user = await this.authService.signUp(createUserDto);
+      return { user };
+    } catch (error) {
+      if (error instanceof ConflictException) {
+        throw new ConflictException('User Already Exits');
+      }
+    }
+    const user = await this.authService.signUp(createUserDto);
+    return { user };
+  }
+
+  @Post('admin/signup')
+  @HttpCode(HttpStatus.CREATED)
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'User successfully created.',
+  })
+  @ApiResponse({
+    status: HttpStatus.CONFLICT,
+    description: 'User already exists.',
+  })
+  async signUpAdmin(@Body() createUserDto: CreateUserDto) {
+    try {
+      createUserDto.type = UserType.Admin;
       const user = await this.authService.signUp(createUserDto);
       return { user };
     } catch (error) {
