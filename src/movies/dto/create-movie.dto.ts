@@ -1,15 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsString,
-  IsArray,
   IsNotEmpty,
   IsOptional,
   IsUrl,
   MinLength,
   MaxLength,
   IsInt,
-  Min,
-  ArrayMinSize,
   IsDateString,
 } from 'class-validator';
 
@@ -23,47 +20,33 @@ export class CreateMovieDto {
     description: 'Name of the movie',
     example: 'The Matrix',
   })
-  readonly Name: string;
-
-  @IsString()
-  @IsNotEmpty()
-  @MinLength(1)
-  @MaxLength(100)
-  @ApiProperty({
-    type: String,
-    description: 'Genre of the movie',
-    example: 'Sci-Fi',
-  })
-  readonly Genre: string;
+  readonly name: string;
 
   @IsInt()
-  @Min(1)
   @ApiProperty({
     type: Number,
-    description: 'Duration of the movie in minutes',
-    example: 120,
+    description: 'Year of the movie release',
+    example: 1999,
   })
-  readonly Duration: number;
+  readonly year: number;
 
-  @IsArray()
-  @ArrayMinSize(1)
-  @IsString({ each: true })
-  @ApiProperty({
-    type: [String],
-    description: 'List of cast members',
-    example: ['Actor A', 'Actor B'],
-  })
-  readonly Cast: string[];
-
-  @IsArray()
-  @IsUrl({}, { each: true })
+  @IsUrl()
   @IsOptional()
   @ApiProperty({
-    type: [String],
-    description: 'List of image URLs for the movie',
-    example: ['http://example.com/image1.jpg'],
+    type: String,
+    description: 'URL to the cover image of the movie',
+    example: 'http://example.com/coverimage.jpg',
   })
-  readonly Image?: string[];
+  readonly coverImage?: string;
+
+  @IsUrl()
+  @IsOptional()
+  @ApiProperty({
+    type: String,
+    description: 'URL to the banner image of the movie',
+    example: 'http://example.com/bannerimage.jpg',
+  })
+  readonly bannerImage?: string;
 
   @IsUrl()
   @IsOptional()
@@ -72,7 +55,7 @@ export class CreateMovieDto {
     description: 'URL to the movie trailer',
     example: 'http://example.com/trailer',
   })
-  readonly Trailer?: string;
+  readonly trailer?: string;
 
   @IsDateString()
   @IsNotEmpty()
@@ -81,5 +64,5 @@ export class CreateMovieDto {
     description: 'Start date of the movie in ISO format',
     example: '2023-12-15',
   })
-  readonly StartDate: string;
+  readonly startDate: string;
 }
