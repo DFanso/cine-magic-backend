@@ -61,12 +61,12 @@ export class PaypalController {
         'booking-confirmation.hbs',
         {
           userName: user.firstName + ' ' + user.lastName,
-          movieName: movie.Name,
+          movieName: movie.name,
           showTime:
             showTime.date + ' ' + showTime.startTime + ' - ' + showTime.endTime,
           seats: booking.selectedSeats,
           totalPrice: booking.totalPrice,
-          movieImageUrl: movie.Image[0],
+          movieImageUrl: movie.bannerImage,
         },
       );
 

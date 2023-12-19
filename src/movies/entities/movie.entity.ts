@@ -12,34 +12,31 @@ export class Movie {
     example: 'The Matrix',
   })
   @Prop({ required: true })
-  Name: string;
-
-  @ApiProperty({
-    type: String,
-    description: 'Genre of the movie',
-    example: 'Sci-Fi',
-  })
-  @Prop({ required: true })
-  Genre: string;
+  name: string;
 
   @ApiProperty({
     type: Number,
-    description: 'Duration of the movie in minutes',
-    example: 120,
+    description: 'Year of the movie release',
+    example: 1999,
   })
   @Prop({ required: true })
-  Duration: number;
-
-  @ApiProperty({ type: [String], description: 'List of cast members' })
-  @Prop({ type: [String], required: true })
-  Cast: string[];
+  year: number;
 
   @ApiProperty({
-    type: [String],
-    description: 'List of image URLs for the movie',
+    type: String,
+    description: 'URL to the cover image of the movie',
+    example: 'http://example.com/coverimage.jpg',
   })
-  @Prop({ type: [String] })
-  Image: string[];
+  @Prop()
+  coverImage: string;
+
+  @ApiProperty({
+    type: String,
+    description: 'URL to the banner image of the movie',
+    example: 'http://example.com/bannerimage.jpg',
+  })
+  @Prop()
+  bannerImage: string;
 
   @ApiProperty({
     type: String,
@@ -47,15 +44,15 @@ export class Movie {
     example: 'http://example.com/trailer',
   })
   @Prop()
-  Trailer: string;
+  trailer: string;
 
   @ApiProperty({
     type: Date,
-    description: 'Start date of the movie',
+    description: 'Start date of the movie in ISO format',
     example: '2023-12-15',
   })
   @Prop({ required: true })
-  StartDate: Date;
+  startDate: Date;
 }
 
 const MovieSchema = SchemaFactory.createForClass(Movie);
