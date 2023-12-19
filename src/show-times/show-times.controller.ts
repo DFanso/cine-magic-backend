@@ -8,6 +8,8 @@ import {
   Delete,
   HttpStatus,
   NotFoundException,
+  UseGuards,
+  HttpException,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -15,12 +17,17 @@ import {
   ApiResponse,
   ApiParam,
   ApiBody,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 import { ShowTimesService } from './show-times.service';
 import { CreateShowTimeDto } from './dto/create-show-time.dto';
 import { UpdateShowTimeDto } from './dto/update-show-time.dto';
 import { MoviesService } from 'src/movies/movies.service';
 import mongoose from 'mongoose';
+import { ClsService } from 'nestjs-cls';
+import { UsersService } from 'src/users/users.service';
+import { AuthGuard } from '@nestjs/passport';
+import { AppClsStore, UserType } from 'src/Types/user.types';
 
 @ApiTags('show-times')
 @Controller({ path: 'movies/:movieId/show-times', version: '1' })
@@ -28,8 +35,12 @@ export class ShowTimesController {
   constructor(
     private readonly showTimesService: ShowTimesService,
     private readonly movieService: MoviesService,
+    private readonly usersService: UsersService,
+    private readonly clsService: ClsService,
   ) {}
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
   @Post()
   @ApiOperation({ summary: 'Create a new show time for a movie' })
   @ApiResponse({
@@ -46,6 +57,17 @@ export class ShowTimesController {
     const movie = await this.movieService.findOne({ _id: movieId });
     if (!movie) {
       throw new NotFoundException(`Movie with ID '${movieId}' not found.`);
+    }
+    const context = this.clsService.get<AppClsStore>();
+    if (!context || !context.user) {
+      throw new HttpException(
+        'Authentication required',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+    const user = await this.usersService.findOne({ _id: context.user.id });
+    if (user.type != UserType.Admin) {
+      throw new HttpException('User is not an Admin', HttpStatus.BAD_REQUEST);
     }
     createShowTimeDto.movieId = new mongoose.Types.ObjectId(movieId);
     return this.showTimesService.create(createShowTimeDto);
@@ -79,6 +101,8 @@ export class ShowTimesController {
     return this.showTimesService.findOne({ movieId, _id: showTimeId });
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
   @Patch(':showTimeId')
   @ApiOperation({ summary: 'Update a show time for a movie' })
   @ApiResponse({
@@ -88,14 +112,27 @@ export class ShowTimesController {
   @ApiParam({ name: 'movieId', type: 'string' })
   @ApiParam({ name: 'showTimeId', type: 'string' })
   @ApiBody({ type: UpdateShowTimeDto })
-  update(
+  async update(
     @Param('movieId') movieId: string,
     @Param('showTimeId') showTimeId: string,
     @Body() updateShowTimeDto: UpdateShowTimeDto,
   ) {
+    const context = this.clsService.get<AppClsStore>();
+    if (!context || !context.user) {
+      throw new HttpException(
+        'Authentication required',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+    const user = await this.usersService.findOne({ _id: context.user.id });
+    if (user.type != UserType.Admin) {
+      throw new HttpException('User is not an Admin', HttpStatus.BAD_REQUEST);
+    }
     return this.showTimesService.update(showTimeId, updateShowTimeDto);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
   @Delete(':showTimeId')
   @ApiOperation({ summary: 'Delete a show time for a movie' })
   @ApiResponse({
@@ -104,10 +141,21 @@ export class ShowTimesController {
   })
   @ApiParam({ name: 'movieId', type: 'string' })
   @ApiParam({ name: 'showTimeId', type: 'string' })
-  remove(
+  async remove(
     @Param('movieId') movieId: string,
     @Param('showTimeId') showTimeId: string,
   ) {
+    const context = this.clsService.get<AppClsStore>();
+    if (!context || !context.user) {
+      throw new HttpException(
+        'Authentication required',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+    const user = await this.usersService.findOne({ _id: context.user.id });
+    if (user.type != UserType.Admin) {
+      throw new HttpException('User is not an Admin', HttpStatus.BAD_REQUEST);
+    }
     return this.showTimesService.remove(movieId, showTimeId);
   }
 }

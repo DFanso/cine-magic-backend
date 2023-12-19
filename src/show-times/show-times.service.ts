@@ -58,9 +58,7 @@ export class ShowTimesService {
   }
 
   async remove(movieId: string, id: string): Promise<{ deleted: boolean }> {
-    const result = await this.showTimeModel
-      .deleteOne({ _id: id, movieId })
-      .exec();
+    const result = await this.showTimeModel.deleteOne({ _id: id }).exec();
     if (result.deletedCount === 0) {
       throw new NotFoundException(`ShowTime with ID '${id}' not found.`);
     }

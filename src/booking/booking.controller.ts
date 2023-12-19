@@ -126,6 +126,8 @@ export class BookingController {
     return bookings;
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
   @Get()
   @ApiOperation({ summary: 'Get all bookings' })
   @ApiResponse({ status: HttpStatus.OK, description: 'All bookings returned' })
@@ -133,6 +135,8 @@ export class BookingController {
     return this.bookingService.findAll();
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
   @Get(':id')
   @ApiOperation({ summary: 'Get a booking by ID' })
   @ApiResponse({ status: HttpStatus.OK, description: 'Booking found' })
@@ -145,6 +149,8 @@ export class BookingController {
     return this.bookingService.findOne({ _id: bookingID });
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
   @Patch(':id')
   @ApiOperation({ summary: 'Update a booking' })
   @ApiResponse({ status: HttpStatus.OK, description: 'Booking updated' })
@@ -156,6 +162,8 @@ export class BookingController {
     return this.bookingService.update(id, updateBookingDto);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a booking' })
   @HttpCode(HttpStatus.NO_CONTENT)
