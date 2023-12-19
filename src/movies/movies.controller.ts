@@ -50,7 +50,7 @@ export class MoviesController {
     description: 'Movie not found.',
   })
   async findOne(@Param('id') id: string) {
-    const movie = await this.moviesService.findOne(id);
+    const movie = await this.moviesService.findOne({ _id: id });
     if (!movie) {
       throw new NotFoundException(`Movie with ID '${id}' not found.`);
     }
