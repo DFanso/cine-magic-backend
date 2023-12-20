@@ -4,6 +4,7 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from 'src/users/users.service';
@@ -16,6 +17,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { UserStatus } from 'src/Types/user.types';
 import { ResetOtpCode } from './entities/reset.otpCode.enitity';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -57,6 +59,13 @@ export class AuthService {
     }
     if (user.status === UserStatus.Unverified) {
       throw new BadRequestException('User not Verified');
+    }
+    const isPasswordValid = await bcrypt.compare(
+      signInDto.password,
+      user.password,
+    );
+    if (!isPasswordValid) {
+      throw new UnauthorizedException('Invalid credentials');
     }
     const payload = { email: user.email, sub: user._id };
     return this.jwtService.sign(payload);
