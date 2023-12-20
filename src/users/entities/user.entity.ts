@@ -4,7 +4,7 @@ import * as mongoosePaginate from 'mongoose-paginate-v2';
 import * as bcrypt from 'bcrypt';
 import { Types } from 'mongoose';
 
-import { UserType, UserStatus } from 'src/Types/user.types';
+import { UserType, UserStatus } from '../../Types/user.types';
 
 export type UserDocument = Document & User;
 

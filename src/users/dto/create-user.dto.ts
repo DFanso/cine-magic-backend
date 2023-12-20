@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsEnum, IsEmail } from 'class-validator';
-import { UserType, UserStatus } from 'src/Types/user.types';
+import { UserType, UserStatus } from '../../Types/user.types';
 
 export class CreateUserDto {
   @ApiProperty({ example: 'John', description: 'The first name of the user' })
@@ -31,6 +31,4 @@ export class CreateUserDto {
 
   @IsEnum(UserStatus)
   status: UserStatus = UserStatus.Unverified;
-
-  // Add other properties as necessary
 }
