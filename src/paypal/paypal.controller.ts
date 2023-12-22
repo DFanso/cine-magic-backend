@@ -64,7 +64,11 @@ export class PaypalController {
           userName: user.firstName + ' ' + user.lastName,
           movieName: movie.name,
           showTime:
-            formattedDate + ' ' + showTime.startTime + ' - ' + showTime.endTime,
+            formattedDate +
+            ' at ' +
+            showTime.startTime +
+            ' - ' +
+            showTime.endTime,
           seats: booking.selectedSeats,
           totalPrice: booking.totalPrice,
           movieImageUrl: movie.bannerImage,
