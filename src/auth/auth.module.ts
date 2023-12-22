@@ -6,10 +6,10 @@ import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './jwt.strategy';
 import { ClsModule } from 'nestjs-cls';
 import { ConfigService } from '@nestjs/config';
-import { UsersModule } from 'src/users/users.module';
+import { UsersModule } from '../users/users.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { OtpCode, OtpCodeSchema } from './entities/otpCode.entity';
-import { EmailModule } from 'src/email/email.module';
+import { EmailModule } from '../email/email.module';
 import {
   ResetOtpCode,
   ResetOtpCodeSchema,

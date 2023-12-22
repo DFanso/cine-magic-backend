@@ -7,15 +7,14 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { UsersService } from 'src/users/users.service';
-import { CreateUserDto } from 'src/users/dto/create-user.dto';
+import { UsersService } from '../users/users.service';
+import { CreateUserDto } from '../users/dto/create-user.dto';
 import { LoginDto } from './dto/login.dto';
 import { OtpCode } from './entities/otpCode.entity';
-import { EmailService } from 'src/email/email.service';
-import { ConfigService } from '@nestjs/config';
+import { EmailService } from '../email/email.service';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { UserStatus } from 'src/Types/user.types';
+import { UserStatus } from '../Types/user.types';
 import { ResetOtpCode } from './entities/reset.otpCode.enitity';
 import * as bcrypt from 'bcrypt';
 
@@ -26,7 +25,6 @@ export class AuthService {
     @InjectModel(ResetOtpCode.name)
     private readonly resetOtpCodeModel: Model<ResetOtpCode>,
     private readonly emailService: EmailService,
-    private readonly configService: ConfigService,
     private usersService: UsersService,
     private jwtService: JwtService,
   ) {}

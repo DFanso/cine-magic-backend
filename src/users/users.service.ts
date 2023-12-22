@@ -5,7 +5,7 @@ import { User, UserDocument } from './entities/user.entity';
 import { PaginateModel } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { ClsService } from 'nestjs-cls';
-import { AppClsStore, UserStatus } from 'src/Types/user.types';
+import { AppClsStore, UserStatus } from '../Types/user.types';
 
 @Injectable()
 export class UsersService {
