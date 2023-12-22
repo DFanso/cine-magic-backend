@@ -4,6 +4,7 @@ import * as nodemailer from 'nodemailer';
 import Handlebars from 'handlebars';
 import * as juice from 'juice';
 import * as fs from 'fs';
+import { ContactFormDto } from './dto/contact-form.dto';
 
 @Injectable()
 export class EmailService {
@@ -62,5 +63,30 @@ export class EmailService {
       this.logger.error(`Email error: ${error}`);
       throw error;
     }
+  }
+
+  async sendContactEmail(contactFormDto: ContactFormDto): Promise<void> {
+    const { name, email, mobileNumber, message } = contactFormDto;
+
+    const context = {
+      name,
+      email,
+      mobileNumber,
+      message,
+    };
+
+    const htmlContent = await this.renderTemplate(
+      'contact-form' + this.templateExt,
+      context,
+    );
+
+    const subject = 'New Contact Form Submission';
+    const recipients = [email];
+    const supportEmail = this.configService.get<string>('EMAIL_FROM_ADDRESS');
+    if (supportEmail) {
+      recipients.push(supportEmail);
+    }
+
+    await this.sendEmail(recipients, subject, htmlContent);
   }
 }
