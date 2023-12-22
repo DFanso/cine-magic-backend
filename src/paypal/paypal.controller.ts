@@ -28,10 +28,10 @@ export class PaypalController {
   @Post('/webhook')
   async handleWebhook(@Body() body: any, @Res() res: Response) {
     console.log('Received PayPal webhook:', body);
-    const bookingId = body.resource.purchase_units[0].custom_id.toString();
+    const bookingId = body.resource.purchase_units[0].custom_id;
 
     if (body.event_type === 'CHECKOUT.ORDER.APPROVED') {
-      const booking = await this.bookingService.findOne(bookingId);
+      const booking = await this.bookingService.findOne({ _id: bookingId });
       const showTimeId = booking.showTimeId.toString();
       const showTime = await this.showTimeService.findById(showTimeId);
       const user = await this.usersService.findOne(booking.userId);
