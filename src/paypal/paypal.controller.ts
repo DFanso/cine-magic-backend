@@ -57,13 +57,14 @@ export class PaypalController {
       await booking.save();
       await showTime.save();
 
+      const formattedDate = this.formatShowTimeDate(showTime.date);
       const emailHtml = await this.emailService.renderTemplate(
         'booking-confirmation.hbs',
         {
           userName: user.firstName + ' ' + user.lastName,
           movieName: movie.name,
           showTime:
-            showTime.date + ' ' + showTime.startTime + ' - ' + showTime.endTime,
+            formattedDate + ' ' + showTime.startTime + ' - ' + showTime.endTime,
           seats: booking.selectedSeats,
           totalPrice: booking.totalPrice,
           movieImageUrl: movie.bannerImage,
@@ -78,5 +79,9 @@ export class PaypalController {
     }
 
     return res.status(HttpStatus.OK).send('Webhook received');
+  }
+
+  formatShowTimeDate(showTimeDate: Date): string {
+    return showTimeDate.toDateString();
   }
 }
