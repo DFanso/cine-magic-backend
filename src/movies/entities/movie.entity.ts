@@ -61,6 +61,47 @@ export class Movie {
   })
   @Prop({ required: true, type: Boolean })
   nowShowing: boolean;
+
+  @ApiProperty({
+    type: String,
+    description: 'Description of the movie',
+    example:
+      'A computer hacker learns about the true nature of reality and his role in the war against its controllers.',
+  })
+  @Prop({ required: true })
+  description: string;
+
+  @ApiProperty({
+    type: [String],
+    description: 'List of cast members',
+    example: ['Keanu Reeves', 'Laurence Fishburne'],
+  })
+  @Prop({ type: [String] })
+  cast: string[];
+
+  @ApiProperty({
+    type: [String],
+    description: 'List of producers',
+    example: ['Joel Silver'],
+  })
+  @Prop({ type: [String] })
+  producedBy: string[];
+
+  @ApiProperty({
+    type: [String],
+    description: 'List of writers',
+    example: ['Lilly Wachowski', 'Lana Wachowski'],
+  })
+  @Prop({ type: [String] })
+  writtenBy: string[];
+
+  @ApiProperty({
+    type: [String],
+    description: 'List of directors',
+    example: ['Lilly Wachowski', 'Lana Wachowski'],
+  })
+  @Prop({ type: [String] })
+  directedBy: string[];
 }
 
 const MovieSchema = SchemaFactory.createForClass(Movie);

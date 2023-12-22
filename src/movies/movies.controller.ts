@@ -21,6 +21,8 @@ import { UsersService } from 'src/users/users.service';
 import { ClsService } from 'nestjs-cls';
 import { AuthGuard } from '@nestjs/passport';
 import { AppClsStore, UserType } from 'src/Types/user.types';
+import { HttpService } from '@nestjs/axios';
+import { ConfigService } from '@nestjs/config';
 
 @ApiTags('movies')
 @Controller({ path: 'movies', version: '1' })
@@ -29,6 +31,8 @@ export class MoviesController {
     private readonly moviesService: MoviesService,
     private readonly usersService: UsersService,
     private readonly clsService: ClsService,
+    private readonly httpService: HttpService,
+    private readonly configService: ConfigService,
   ) {}
 
   @ApiBearerAuth()
@@ -52,13 +56,43 @@ export class MoviesController {
     if (user.type != UserType.Admin) {
       throw new HttpException('User is not an Admin', HttpStatus.BAD_REQUEST);
     }
+
+    const apiKey = this.configService.get<string>('OMDB_API_KEY');
+    const title = createMovieDto.name;
+    const year = createMovieDto.year;
+    const url = `http://www.omdbapi.com/?&apikey=${apiKey}&t=${encodeURIComponent(
+      title,
+    )}&y=${year}`;
+
     try {
-      return this.moviesService.create(createMovieDto);
+      const response = await this.httpService.get(url).toPromise();
+      const movieDetails = response.data;
+
+      if (movieDetails.Response === 'False') {
+        throw new NotFoundException(movieDetails.Error);
+      }
+
+      const extendedMovieDto = {
+        ...createMovieDto,
+        description: movieDetails.Plot,
+        cast: movieDetails.Actors.split(', '),
+        producedBy: movieDetails.Production
+          ? movieDetails.Production.split(', ')
+          : [],
+        writtenBy: movieDetails.Writer.split(', '),
+        directedBy: movieDetails.Director.split(', '),
+      };
+
+      return this.moviesService.create(extendedMovieDto);
     } catch (error) {
-      throw new HttpException(
-        'An error occurred while creating the movie',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      if (error.response && error.response.status === 404) {
+        throw new NotFoundException('Movie not found in OMDb.');
+      } else {
+        throw new HttpException(
+          'Failed to fetch movie details from OMDb.',
+          HttpStatus.SERVICE_UNAVAILABLE,
+        );
+      }
     }
   }
 

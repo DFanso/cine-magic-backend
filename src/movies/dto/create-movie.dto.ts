@@ -9,6 +9,7 @@ import {
   IsInt,
   IsDateString,
   IsBoolean,
+  IsArray,
 } from 'class-validator';
 
 export class CreateMovieDto {
@@ -75,4 +76,26 @@ export class CreateMovieDto {
     example: true,
   })
   readonly nowShowing: boolean;
+
+  @IsString()
+  @IsNotEmpty()
+  @MinLength(1)
+  @MaxLength(1000)
+  readonly description: string;
+
+  @IsArray()
+  @IsString({ each: true })
+  readonly cast: string[];
+
+  @IsArray()
+  @IsString({ each: true })
+  readonly producedBy: string[];
+
+  @IsArray()
+  @IsString({ each: true })
+  readonly writtenBy: string[];
+
+  @IsArray()
+  @IsString({ each: true })
+  readonly directedBy: string[];
 }
