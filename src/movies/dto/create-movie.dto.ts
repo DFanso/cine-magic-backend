@@ -8,6 +8,7 @@ import {
   MaxLength,
   IsInt,
   IsDateString,
+  IsBoolean,
 } from 'class-validator';
 
 export class CreateMovieDto {
@@ -65,4 +66,13 @@ export class CreateMovieDto {
     example: '2023-12-15',
   })
   readonly startDate: string;
+
+  @IsBoolean()
+  @IsNotEmpty()
+  @ApiProperty({
+    type: Boolean,
+    description: 'Indicates if the movie is currently showing',
+    example: true,
+  })
+  readonly nowShowing: boolean;
 }

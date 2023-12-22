@@ -16,8 +16,14 @@ export class MoviesService {
     return createdMovie.save();
   }
 
-  async findAll(): Promise<Movie[]> {
-    return this.movieModel.find().exec();
+  async findAll(nowShowing?: boolean): Promise<Movie[]> {
+    let query = this.movieModel.find();
+
+    if (nowShowing !== undefined) {
+      query = query.where('nowShowing').equals(nowShowing);
+    }
+
+    return query.exec();
   }
 
   async findOne(filter: any): Promise<MovieDocument | null> {

@@ -53,6 +53,14 @@ export class Movie {
   })
   @Prop({ required: true })
   startDate: Date;
+
+  @ApiProperty({
+    type: Boolean,
+    description: 'Indicates if the movie is currently showing',
+    example: true,
+  })
+  @Prop({ required: true, type: Boolean })
+  nowShowing: boolean;
 }
 
 const MovieSchema = SchemaFactory.createForClass(Movie);

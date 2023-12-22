@@ -11,8 +11,9 @@ import {
   NotFoundException,
   HttpException,
   UseGuards,
+  Query,
 } from '@nestjs/common';
-import { ApiTags, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiTags, ApiResponse, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
 import { MoviesService } from './movies.service';
 import { CreateMovieDto } from './dto/create-movie.dto';
 import { UpdateMovieDto } from './dto/update-movie.dto';
@@ -66,8 +67,15 @@ export class MoviesController {
     status: HttpStatus.OK,
     description: 'Array of movies retrieved successfully.',
   })
-  findAll() {
-    return this.moviesService.findAll();
+  @ApiQuery({
+    name: 'nowShowing',
+    required: false,
+    type: Boolean,
+    description: 'Filter movies by now showing status',
+  })
+  findAll(@Query('nowShowing') nowShowing: string) {
+    const isNowShowing = nowShowing === 'true';
+    return this.moviesService.findAll(isNowShowing);
   }
 
   @Get(':id')
