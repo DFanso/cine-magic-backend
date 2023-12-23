@@ -5,9 +5,15 @@ import { JwtService } from '@nestjs/jwt';
 import { EmailService } from '../email/email.service';
 import { Model } from 'mongoose';
 import { CreateUserDto } from '../users/dto/create-user.dto';
-import { ConflictException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { OtpCode } from './entities/otpCode.entity';
 import { ResetOtpCode } from './entities/reset.otpCode.enitity';
+import * as bcrypt from 'bcrypt';
+import { LoginDto } from './dto/login.dto';
 
 export enum UserType {
   Admin = 'ADMIN',
@@ -18,6 +24,11 @@ export enum UserStatus {
   Verified = 'VERIFIED',
   Unverified = 'UNVERIFIED',
 }
+
+jest.mock('bcrypt', () => ({
+  ...jest.requireActual('bcrypt'),
+  compare: jest.fn(),
+}));
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -114,5 +125,81 @@ describe('AuthService', () => {
     });
   });
 
-  // You can add more tests for other methods of AuthService
+  describe('signIn', () => {
+    beforeEach(() => {
+      jest.spyOn(bcrypt, 'compare').mockResolvedValue(true);
+    });
+
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+
+    it('should return a JWT token for valid credentials', async () => {
+      const loginDto: LoginDto = {
+        email: 'john.doe@example.com',
+        password: 'password123',
+      };
+      const user = {
+        ...loginDto,
+        _id: 'someUserId',
+        status: UserStatus.Verified,
+      };
+      const expectedJwt = 'some.jwt.token';
+
+      mockUsersService.findOne.mockResolvedValue(user);
+      mockJwtService.sign.mockReturnValue(expectedJwt);
+
+      const result = await service.signIn(loginDto);
+      expect(result).toEqual(expectedJwt);
+    });
+
+    it('should return null if user is not found', async () => {
+      const loginDto: LoginDto = {
+        email: 'nonexistent@example.com',
+        password: 'password123',
+      };
+
+      mockUsersService.findOne.mockResolvedValue(null);
+
+      const result = await service.signIn(loginDto);
+      expect(result).toBeNull();
+    });
+
+    it('should throw BadRequestException if user is unverified', async () => {
+      const loginDto: LoginDto = {
+        email: 'unverified@example.com',
+        password: 'password123',
+      };
+      const user = {
+        ...loginDto,
+        _id: 'someUserId',
+        status: UserStatus.Unverified,
+      };
+
+      mockUsersService.findOne.mockResolvedValue(user);
+
+      await expect(service.signIn(loginDto)).rejects.toThrow(
+        BadRequestException,
+      );
+    });
+
+    it('should throw UnauthorizedException for invalid password', async () => {
+      const loginDto: LoginDto = {
+        email: 'john.doe@example.com',
+        password: 'invalidPassword',
+      };
+      const user = {
+        ...loginDto,
+        _id: 'someUserId',
+        status: UserStatus.Verified,
+      };
+
+      mockUsersService.findOne.mockResolvedValue(user);
+      (bcrypt.compare as jest.Mock).mockResolvedValue(false);
+
+      await expect(service.signIn(loginDto)).rejects.toThrow(
+        UnauthorizedException,
+      );
+    });
+  });
 });
