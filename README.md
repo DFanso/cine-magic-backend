@@ -41,6 +41,7 @@ To get started with the Cine Magic backend on your local machine, follow these s
    ```bash
    git clone https://github.com/DFanso/cine-magic-backend.git
 
+
 2. Navigate to the project directory:
 
    ```bash
