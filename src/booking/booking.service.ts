@@ -4,9 +4,9 @@ import { Model } from 'mongoose';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { UpdateBookingDto } from './dto/update-booking.dto';
 import { Booking, BookingDocument } from './entities/booking.entity';
-import { ShowTimesService } from 'src/show-times/show-times.service';
-import { PaypalService } from 'src/paypal/paypal.service';
-import { MoviesService } from 'src/movies/movies.service';
+import { ShowTimesService } from '../show-times/show-times.service';
+import { PaypalService } from '../paypal/paypal.service';
+import { MoviesService } from '../movies/movies.service';
 
 @Injectable()
 export class BookingService {
