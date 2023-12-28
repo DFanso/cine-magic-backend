@@ -65,4 +65,14 @@ describe('FeedbacksService', () => {
     const result = await service.remove('someFeedbackId');
     expect(result).toEqual({ deleted: true });
   });
+  it('should throw NotFoundException when no feedbacks are found', async () => {
+    jest.spyOn(service, 'findAll').mockRejectedValue(new NotFoundException());
+    await expect(service.findAll()).rejects.toThrow(NotFoundException);
+  });
+  it('should throw NotFoundException when trying to delete a non-existent feedback', async () => {
+    jest.spyOn(service, 'remove').mockRejectedValue(new NotFoundException());
+    await expect(service.remove('nonExistentFeedbackId')).rejects.toThrow(
+      NotFoundException,
+    );
+  });
 });
