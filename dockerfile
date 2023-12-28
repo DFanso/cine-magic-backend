@@ -14,6 +14,7 @@ RUN npm install
 COPY . .
 
 RUN npm run build
+RUN npm run test
 
 # Stage 2: Run the application
 FROM node:18-alpine
