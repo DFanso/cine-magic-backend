@@ -113,10 +113,9 @@ export class BookingController {
         HttpStatus.UNAUTHORIZED,
       );
     }
-
-    // Assuming the user ID in the context is already a valid MongoDB ObjectId
     const bookings = await this.bookingService.findAll({
       userId: context.user.id,
+      paymentStatus: 'PAID',
     });
 
     if (bookings.length === 0) {
