@@ -66,6 +66,24 @@ export class BookingService {
       )
       .populate('userId')
       .populate('movieId')
+      .exec();
+
+    if (bookings.length === 0) {
+      throw new NotFoundException('No booking found matching the criteria');
+    }
+    return bookings;
+  }
+
+  async findAllForUser(filter = {}): Promise<Booking[]> {
+    const bookings = await this.bookingModel
+      .find(
+        filter,
+        Object.keys(this.bookingModel.schema.obj)
+          .map((key) => key)
+          .join(' '),
+      )
+      .populate('userId')
+      .populate('movieId')
       .populate('showTimeId')
       .exec();
 
@@ -85,7 +103,6 @@ export class BookingService {
       )
       .populate('userId')
       .populate('movieId')
-      .populate('showTimeId')
       .exec();
     if (!booking) {
       throw new NotFoundException(`Booking with not found`);

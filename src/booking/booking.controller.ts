@@ -113,7 +113,7 @@ export class BookingController {
         HttpStatus.UNAUTHORIZED,
       );
     }
-    const bookings = await this.bookingService.findAll({
+    const bookings = await this.bookingService.findAllForUser({
       userId: context.user.id,
       paymentStatus: 'PAID',
     });
