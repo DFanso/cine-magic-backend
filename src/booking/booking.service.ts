@@ -66,6 +66,7 @@ export class BookingService {
       )
       .populate('userId')
       .populate('movieId')
+      .populate('showTimeId')
       .exec();
 
     if (bookings.length === 0) {
@@ -84,6 +85,7 @@ export class BookingService {
       )
       .populate('userId')
       .populate('movieId')
+      .populate('showTimeId')
       .exec();
     if (!booking) {
       throw new NotFoundException(`Booking with not found`);
