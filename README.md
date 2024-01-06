@@ -130,6 +130,7 @@ To get started with the Cine Magic backend on your local machine, follow these s
    npm start
 
 6. The backend API will be accessible at http://localhost:3000.
+7. The backend API Doc will be accessible at http://localhost:3000/api.
 
 ## Test
 
